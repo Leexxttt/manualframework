@@ -1,9 +1,18 @@
 package org.smart4j.framework;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.smart4j.framework.bean.Data;
 import org.smart4j.framework.bean.Handler;
+import org.smart4j.framework.bean.Param;
+import org.smart4j.framework.bean.View;
 import org.smart4j.framework.helper.BeanHelper;
 import org.smart4j.framework.helper.ConfigHelper;
 import org.smart4j.framework.helper.ControllerHelper;
+import org.smart4j.framework.utils.CodecUtil;
+import org.smart4j.framework.utils.JsonUtil;
+import org.smart4j.framework.utils.ReflectionUtil;
+import org.smart4j.framework.utils.StreamUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -14,6 +23,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +70,59 @@ public class DispatcherServlet extends HttpServlet {
                 String paramValue = request.getParameter(paramName);
                 paramMap.put(paramName,paramValue);
             }
+            String body = CodecUtil.decodeURL(StreamUtil.getString(request.getInputStream()));
+            if(StringUtils.isNotEmpty(body)){
+                String[] params = StringUtils.split(body, "&");
+                if(ArrayUtils.isNotEmpty(params)){
+                    for(String param:params){
+                        String[] array = StringUtils.split(param, "=");
+                        if(ArrayUtils.isNotEmpty(array)&&array.length==2){
+                            String paramName=array[0];
+                            String paramValue=array[1];
+                            paramMap.put(paramName,paramValue);
+                        }
+                    }
+                }
+            }
+            Param param=new Param(paramMap);
+            /**************参数获取完毕**********************/
+            //调用Action方法
+            Method actionMethod = handler.getActionMethod();
+            Object result = ReflectionUtil.invokeMethod(controllerBean, actionMethod, param);
+            //处理Action方法返回值
+            if(result instanceof View){
+                //返回jsp页面和数据
+                View view=(View)result;
+                String path=view.getPath();
+                if(StringUtils.isNotEmpty(path)){
+                    if(path.startsWith("/")){
+                        //重定向
+                        response.sendRedirect(request.getContextPath()+path);
+                    }else{
+                        //直接跳转页面
+                        Map<String, Object> model = view.getModel();
+                        for(String key:model.keySet()){
+                            request.setAttribute(key,model.get(key));
+                        }
+                        request.getRequestDispatcher(ConfigHelper.getAppJspPath()+path).forward(request,response);
+                    }
+                }
+            }else if(result instanceof Data){
+                //纯粹返回的是数据
+                //返回json数据
+                Data data=(Data)result;
+                Object model = data.getModel();
+                if(model!=null){
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    PrintWriter writer = response.getWriter();
+                    String json = JsonUtil.toJson(model);
+                    writer.write(json);
+                    writer.flush();
+                    writer.close();
+                }
 
+            }
         }
 
     }
