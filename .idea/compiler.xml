@@ -8,7 +8,6 @@
         <outputRelativeToContentRoot value="true" />
         <module name="chapter3" />
         <module name="smart-framework" />
-        <module name="smartframework" />
       </profile>
     </annotationProcessing>
   </component>
