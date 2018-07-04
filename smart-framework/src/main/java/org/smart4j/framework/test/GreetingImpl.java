@@ -11,6 +11,12 @@ public class GreetingImpl implements Greeting {
         System.out.println("Hello:"+name);
         //after();
     }
+    public void goodMorning(String name){
+        System.out.println("GoodMorning:"+name);
+    }
+    public void goodNight(String name){
+        System.out.println("GoodNight:"+name);
+    }
 
     private void after() {
         System.out.println("After");
