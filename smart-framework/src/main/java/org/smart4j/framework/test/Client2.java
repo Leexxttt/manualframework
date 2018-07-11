@@ -33,6 +33,6 @@ public class Client2 {
         /**
          * 调用代理的方法
          */
-        proxy.sayHello("lxt");
+        proxy.sayHello();
     }
 }

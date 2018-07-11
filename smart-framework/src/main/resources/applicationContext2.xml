@@ -1,0 +1,19 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		">
+
+    <!--扫描指定包(将带有Component注解的类自动定义为Spring Bean-->
+    <context:component-scan base-package="org.smart4j.framework.test" />
+    <!--配置一个代理-->
+    <bean id="greetingIntroProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+       <property name="interfaces" value="org.smart4j.framework.test.Apology" />
+        <property name="target" value="greetingImpl" />
+        <property name="interceptorNames" value="greetingIntroAdvice" />
+        <!--默认是false使用的是JDK动态代理 为true使用的是CGLib代理 -->
+        <property name="proxyTargetClass" value="true" />
+    </bean>
+</beans>

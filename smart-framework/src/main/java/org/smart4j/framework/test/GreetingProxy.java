@@ -12,9 +12,9 @@ public class GreetingProxy implements Greeting {
         this.greetingImpl = greetingImpl;
     }
 
-    public void sayHello(String name) {
+    public void sayHello() {
         before();
-        greetingImpl.sayHello(name);
+        greetingImpl.sayHello();
         after();
     }
 

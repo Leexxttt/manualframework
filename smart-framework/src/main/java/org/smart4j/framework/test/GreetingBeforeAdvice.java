@@ -6,8 +6,8 @@ import java.lang.reflect.Method;
 
 /**
  * @AUTHOR: lxt
- * @DATE: 2018/7/3 11:25
- * @Description:
+ * @DATE: 2018/7/11 15:29
+ * @Description: Greeting前置增强类
  */
 public class GreetingBeforeAdvice implements MethodBeforeAdvice {
     public void before(Method method, Object[] objects, Object o) throws Throwable {

@@ -26,9 +26,9 @@ public class Client {
         /**
          * CGLib动态代理(与JDK不同的是不需要接口)
          */
-        CGLibProxy cgLibProxy=new CGLibProxy();
-        Hello helloProxy = cgLibProxy.getProxy(HelloImpl.class);
-        helloProxy.say("lxt");
+//        CGLibProxy cgLibProxy=new CGLibProxy();
+//        Hello helloProxy = cgLibProxy.getProxy(HelloImpl.class);
+//        helloProxy.say("lxt");
 
     }
 }
