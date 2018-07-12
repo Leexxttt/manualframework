@@ -14,7 +14,13 @@ public class GreetingImpl implements Greeting {
         System.out.println("Hello:");
         //after();
         //故意抛出一个异常，看看异常是否能够被拦截到
-        throw new RuntimeException("ERROR");
+        //throw new RuntimeException("ERROR");
+    }
+    public void goodMorning(){
+        System.out.println("GoodMorning");
+    }
+    public void goodNight(){
+        System.out.println("GoodNight");
     }
 
 }
